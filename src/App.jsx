@@ -9,6 +9,7 @@ const App = () => {
         <div>
             {/* <button onClick={() => setOpen(!open)}>Open Camera</button> */}
             <Phone />
+            <NewQuarkCamera />
         </div>
     )
 }
