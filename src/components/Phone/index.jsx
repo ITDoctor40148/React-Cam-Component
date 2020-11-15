@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Rnd } from "react-rnd";
 
 import Webcam from "react-webcam";
@@ -6,11 +7,9 @@ import Webcam from "react-webcam";
 import "react-resizable/css/styles.css";
 
 import "./index.scss";
-import camera from "../camera.svg";
+import CameraIcon from "../camera.svg";
 
-// function capture(imgSrc) {
-//   console.log(imgSrc);
-// }
+import { addLink } from "../../store/links-action";
 
 const Phone = () => {
   const [clickTime, setClickTime] = React.useState(0);
@@ -21,9 +20,10 @@ const Phone = () => {
   const [capturing, setCapturing] = React.useState(false);
   const [recordedChunks, setRecordedChunks] = React.useState([]);
 
-  const capture = React.useCallback(() => {
+  const capture = React.useCallback((flag = false) => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
+    if (flag) addLink(imageSrc);
   }, [webcamRef, setImgSrc]);
 
   const handleStartCaptureClick = React.useCallback(() => {
@@ -59,6 +59,7 @@ const Phone = () => {
       });
       const url = URL.createObjectURL(blob);
       setImgSrc(url);
+      addLink(url);
       setRecordedChunks([]);
     }
   }, [recordedChunks]);
@@ -80,10 +81,20 @@ const Phone = () => {
           <div className="close">x</div>
           <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
           <div>
-            <p className="text-center">01:23</p>
+            {capturing && <p className="text-center">01:23</p>}
             <div className="button-group">
               <div className="btn-circle">
-                {imgSrc && <img alt="Preview" src={imgSrc} />}
+                {imgSrc&&imgSrc.substring(0, 4) === "data" && (
+                  <img src={imgSrc} alt="turn camera" />
+                )}
+                {imgSrc&&imgSrc.substring(0, 4) === "blob" && (
+                  <iframe
+                    src={imgSrc}
+                    title="video"
+                    alt="turn camera"
+                    allow="camera; microphone;"
+                  />
+                )}
               </div>
               <div
                 className="btn-capture"
@@ -99,6 +110,7 @@ const Phone = () => {
                       setCapturing(false);
                       handleStopCaptureClick();
                       handleDownload();
+                      capture(true);
                     }
                   } else {
                     capture();
@@ -107,17 +119,7 @@ const Phone = () => {
                 onMouseDown={() => setClickTime(new Date().getTime())}
               />
               <div className="btn-circle">
-                {imgSrc&&imgSrc.substring(0, 4) === "data" && (
-                  <img src={imgSrc} alt="turn camera" />
-                )}
-                {imgSrc&&imgSrc.substring(0, 4) === "blob" && (
-                  <iframe
-                    src={imgSrc}
-                    title="video"
-                    alt="turn camera"
-                    allow="camera; microphone;"
-                  />
-                )}
+                <img src={CameraIcon} alt="Toggling" />
               </div>
             </div>
           </div>
@@ -127,4 +129,12 @@ const Phone = () => {
   );
 };
 
-export default Phone;
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    addLink: (link) => {
+      dispatch(addLink(link))
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Phone);
