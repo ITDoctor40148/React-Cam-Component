@@ -16,6 +16,7 @@
     "react-dom": "^16.13.1",
     "react-rnd": "^10.2.3",
     "react-router-dom": "^5.2.0",
+    "react-resizable": "^1.11.0",
     "react-scripts": "3.4.3",
     "react-webcam": "^5.2.1",
     "videojs-record": "^4.1.0"
