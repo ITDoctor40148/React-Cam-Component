@@ -46,10 +46,10 @@ const Phone = () => {
             <p className="text-center">01:23</p>
             <div className="button-group">
               <div className="btn-circle">
-                <img alt="Preview" src={captured} />
+                {captured && <img alt="Preview" src={captured} />}
               </div>
               <div
-              className="btn-circle"
+              className="btn-capture"
                 onClick={(img) => {
                   console.log("abcdef");
                   cam.current.capture(img);
