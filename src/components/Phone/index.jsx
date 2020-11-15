@@ -110,7 +110,7 @@ const Phone = () => {
                 {imgSrc&&imgSrc.substring(0, 4) === "data" && (
                   <img src={imgSrc} alt="turn camera" />
                 )}
-                {imgSrc&&imgSrc.substring(0, 4) === "blog" && (
+                {imgSrc&&imgSrc.substring(0, 4) === "blob" && (
                   <iframe
                     src={imgSrc}
                     title="video"
