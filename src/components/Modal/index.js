@@ -10,11 +10,13 @@ const Modal = ({ handleClose, show, links }) => {
     <div className={showHideClassName}>
       <section className="modal-main">
         <div className="modal-close">x</div>
-        {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
-        {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" && <iframe src={links[currentImageIndex]} title="Saved Data" />}
+        <div>
+          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
+          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" && <iframe src={links[currentImageIndex]} title="Saved Data" />}
+        </div>
         <div className="w-100 d-flex justify-content-between text-white display-6">
-          <div>&lt;</div>
-          <div>&gt;</div>
+          <div onClick={() => setCurrentImageIndex((currentImageIndex + 1) % links.length)}>&lt;</div>
+          <div onClick={() => setCurrentImageIndex((currentImageIndex - 1) % links.length)}>&gt;</div>
         </div>
         <button style={{
           width: "100%",
