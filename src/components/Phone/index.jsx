@@ -13,6 +13,8 @@ import camera from "../camera.svg";
 // }
 
 const Phone = () => {
+  const [clickTime, setClickTime] = React.useState(0);
+
   const webcamRef = React.useRef(null);
   const mediaRecorderRef = React.useRef(null);
   const [imgSrc, setImgSrc] = React.useState(null);
@@ -27,7 +29,7 @@ const Phone = () => {
   const handleStartCaptureClick = React.useCallback(() => {
     setCapturing(true);
     mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
-      mimeType: "video/webm"
+      mimeType: "video/webm",
     });
     mediaRecorderRef.current.addEventListener(
       "dataavailable",
@@ -53,7 +55,7 @@ const Phone = () => {
   const handleDownload = React.useCallback(() => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, {
-        type: "video/webm"
+        type: "video/webm",
       });
       const url = URL.createObjectURL(blob);
       setImgSrc(url);
@@ -85,25 +87,37 @@ const Phone = () => {
               </div>
               <div
                 className="btn-capture"
-                onClick={capture}
-                onLongClick={() => { 
-                  if (!capturing) {
-                    setCapturing(true);
-                    handleStartCaptureClick();
+                onMouseLeave={() => setClickTime(new Date().getTime())}
+                onMouseUp={() => {
+                  const now = new Date().getTime();
+                  if (now - clickTime > 500) {
+                    console.log("test");
+                    if (!capturing) {
+                      setCapturing(true);
+                      handleStartCaptureClick();
+                    } else {
+                      setCapturing(false);
+                      handleStopCaptureClick();
+                      handleDownload();
+                    }
                   } else {
-                    setCapturing(false);
-                    handleStopCaptureClick();
-                    handleDownload();
+                    capture();
                   }
                 }}
+                onMouseDown={() => setClickTime(new Date().getTime())}
               />
               <div className="btn-circle">
-                {
-                  camera.split(0, 4) === "data" && <img src={camera} alt="turn camera" />
-                }
-                {
-                  camera.split(0, 4) === "blog" && <iframe src={camera} title="video" alt="turn camera" allow="camera; microphone;" />
-                }
+                {camera.split(0, 4) === "data" && (
+                  <img src={camera} alt="turn camera" />
+                )}
+                {camera.split(0, 4) === "blog" && (
+                  <iframe
+                    src={camera}
+                    title="video"
+                    alt="turn camera"
+                    allow="camera; microphone;"
+                  />
+                )}
               </div>
             </div>
           </div>
