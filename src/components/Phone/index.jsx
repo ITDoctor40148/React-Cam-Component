@@ -108,11 +108,11 @@ const Phone = () => {
               />
               <div className="btn-circle">
                 {camera.split(0, 4) === "data" && (
-                  <img src={camera} alt="turn camera" />
+                  <img src={imgSrc} alt="turn camera" />
                 )}
                 {camera.split(0, 4) === "blog" && (
                   <iframe
-                    src={camera}
+                    src={imgSrc}
                     title="video"
                     alt="turn camera"
                     allow="camera; microphone;"
