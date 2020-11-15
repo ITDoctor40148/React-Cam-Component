@@ -107,10 +107,10 @@ const Phone = () => {
                 onMouseDown={() => setClickTime(new Date().getTime())}
               />
               <div className="btn-circle">
-                {imgSrc&&imgSrc.split(0, 4) === "data" && (
+                {imgSrc&&imgSrc.substring(0, 4) === "data" && (
                   <img src={imgSrc} alt="turn camera" />
                 )}
-                {imgSrc&&imgSrc.split(0, 4) === "blog" && (
+                {imgSrc&&imgSrc.substring(0, 4) === "blog" && (
                   <iframe
                     src={imgSrc}
                     title="video"
