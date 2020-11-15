@@ -6,6 +6,8 @@ import Webcam from "react-webcam";
 
 import "react-resizable/css/styles.css";
 
+import Modal from "../Modal";
+
 import "./index.scss";
 import CameraIcon from "../camera.svg";
 
@@ -13,6 +15,7 @@ import { addLink } from "../../store/links-action";
 
 const Phone = (props) => {
   const [clickTime, setClickTime] = React.useState(0);
+  const [show, setShow] = React.useState(false);
 
   const webcamRef = React.useRef(null);
   const mediaRecorderRef = React.useRef(null);
@@ -20,11 +23,14 @@ const Phone = (props) => {
   const [capturing, setCapturing] = React.useState(false);
   const [recordedChunks, setRecordedChunks] = React.useState([]);
 
-  const capture = React.useCallback((flag = false) => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setImgSrc(imageSrc);
-    if (!flag) props.addLink(imageSrc);
-  }, [webcamRef, setImgSrc]);
+  const capture = React.useCallback(
+    (flag = false) => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      setImgSrc(imageSrc);
+      if (!flag) props.addLink(imageSrc);
+    },
+    [webcamRef, setImgSrc]
+  );
 
   const handleStartCaptureClick = React.useCallback(() => {
     setCapturing(true);
@@ -83,17 +89,9 @@ const Phone = (props) => {
           <div>
             {capturing && <p className="text-center">01:23</p>}
             <div className="button-group">
-              <div className="btn-circle">
-                {imgSrc&&imgSrc.substring(0, 4) === "data" && (
+              <div className="btn-circle" onClick={() => setShow(true)}>
+                {imgSrc && imgSrc.substring(0, 4) === "data" && (
                   <img src={imgSrc} alt="turn camera" />
-                )}
-                {imgSrc&&imgSrc.substring(0, 4) === "blob" && (
-                  <iframe
-                    src={imgSrc}
-                    title="video"
-                    alt="turn camera"
-                    allow="camera; microphone;"
-                  />
                 )}
               </div>
               <div
@@ -124,18 +122,19 @@ const Phone = (props) => {
             </div>
           </div>
         </div>
+        <Modal show={show} handleClose={() => setShow(false)} />
       </Rnd>
     </div>
   );
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch) => {
   return {
     addLink: (link) => {
-      console.log(link)
-      dispatch(addLink(link))
-    }
-  }
-}
+      console.log(link);
+      dispatch(addLink(link));
+    },
+  };
+};
 
 export default connect(null, mapDispatchToProps)(Phone);
