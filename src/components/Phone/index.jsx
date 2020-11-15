@@ -4,7 +4,9 @@ import { Rnd } from "react-rnd";
 import { Camera } from "react-cam";
 
 import "react-resizable/css/styles.css";
+
 import "./index.scss";
+import camera from '../camera.svg';
 
 // function capture(imgSrc) {
 //   console.log(imgSrc);
@@ -54,10 +56,8 @@ const Phone = () => {
                   console.log("abcdef");
                   cam.current.capture(img);
                 }}
-              >
-                2
-              </div>
-              <div className="btn-circle">3</div>
+              />
+              <div className="btn-circle"><img src={camera} alt="turn camera" /></div>
             </div>
           </div>
         </div>
