@@ -85,7 +85,7 @@ const Phone = (props) => {
       >
         <div style={{ height: "100%", width: "100%" }}>
           <div className="close">x</div>
-          <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
+          <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" className="w-100 h-75" />
           <div>
             {capturing && <p className="text-center">01:23</p>}
             <div className="button-group">
