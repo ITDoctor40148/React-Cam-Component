@@ -14,12 +14,53 @@ import camera from "../camera.svg";
 
 const Phone = () => {
   const webcamRef = React.useRef(null);
+  const mediaRecorderRef = React.useRef(null);
   const [imgSrc, setImgSrc] = React.useState(null);
+  const [capturing, setCapturing] = React.useState(false);
+  const [recordedChunks, setRecordedChunks] = React.useState([]);
 
   const capture = React.useCallback(() => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
   }, [webcamRef, setImgSrc]);
+
+  const handleStartCaptureClick = React.useCallback(() => {
+    setCapturing(true);
+    mediaRecorderRef.current = new MediaRecorder(webcamRef.current.stream, {
+      mimeType: "video/webm"
+    });
+    mediaRecorderRef.current.addEventListener(
+      "dataavailable",
+      handleDataAvailable
+    );
+    mediaRecorderRef.current.start();
+  }, [webcamRef, setCapturing, mediaRecorderRef]);
+
+  const handleDataAvailable = React.useCallback(
+    ({ data }) => {
+      if (data.size > 0) {
+        setRecordedChunks((prev) => prev.concat(data));
+      }
+    },
+    [setRecordedChunks]
+  );
+
+  const handleStopCaptureClick = React.useCallback(() => {
+    mediaRecorderRef.current.stop();
+    setCapturing(false);
+  }, [mediaRecorderRef, webcamRef, setCapturing]);
+
+  const handleDownload = React.useCallback(() => {
+    if (recordedChunks.length) {
+      const blob = new Blob(recordedChunks, {
+        type: "video/webm"
+      });
+      const url = URL.createObjectURL(blob);
+      setImgSrc(url);
+      setRecordedChunks([]);
+    }
+  }, [recordedChunks]);
+
   return (
     <div>
       <Rnd
@@ -45,9 +86,24 @@ const Phone = () => {
               <div
                 className="btn-capture"
                 onClick={capture}
+                onLongClick={() => { 
+                  if (!capturing) {
+                    setCapturing(true);
+                    handleStartCaptureClick();
+                  } else {
+                    setCapturing(false);
+                    handleStopCaptureClick();
+                    handleDownload();
+                  }
+                }}
               />
               <div className="btn-circle">
-                <img src={camera} alt="turn camera" />
+                {
+                  camera.split(0, 4) === "data" && <img src={camera} alt="turn camera" />
+                }
+                {
+                  camera.split(0, 4) === "blog" && <iframe src={camera} title="video" alt="turn camera" allow="camera; microphone;" />
+                }
               </div>
             </div>
           </div>
