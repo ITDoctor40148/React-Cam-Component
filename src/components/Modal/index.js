@@ -9,6 +9,7 @@ const Modal = ({ handleClose, show, links }) => {
   const showHideClassName = show ? "modal display-block" : "modal display-none";
 
   const toggle = React.useCallback(() => {
+    if (!video.current) return;
     if (!play) {
       video.current.play();
       setPlay(true);
@@ -22,7 +23,7 @@ const Modal = ({ handleClose, show, links }) => {
     <div className={showHideClassName}>
       <section className="modal-main">
         <div className="modal-close">x</div>
-        <div>
+        <div className="video-center">
           {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
           {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" &&
             <video ref={video} className="w-100" controls src={links[currentImageIndex]} title="Saved Data" >
@@ -30,9 +31,7 @@ const Modal = ({ handleClose, show, links }) => {
             </video>}
           <div className="w-100 d-flex justify-content-between text-white display-6">
             <div onClick={() => setCurrentImageIndex(Math.abs((currentImageIndex - 1) % links.length))}>&lt;</div>
-            <div onClick={() => {
-              toggle();
-            }}>Play</div>
+            <div onClick={() => { toggle() }}>{play ? "Pause" : "Play"}</div>
             <div onClick={() => setCurrentImageIndex((currentImageIndex + 1) % links.length)}>&gt;</div>
           </div>
           <button style={{
