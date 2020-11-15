@@ -1,23 +1,25 @@
 import React from "react";
 import { Rnd } from "react-rnd";
 
-import { Camera } from "react-cam";
+import Webcam from "react-webcam";
 
 import "react-resizable/css/styles.css";
 
 import "./index.scss";
-import camera from '../camera.svg';
+import camera from "../camera.svg";
 
 // function capture(imgSrc) {
 //   console.log(imgSrc);
 // }
 
 const Phone = () => {
-    const [captured, setCaptured] = React.useState("");
-    // const capture = React.useCallback((imgSrc) => {
-    //     console.log(imgSrc);
-    // }, [])
-  const cam = React.useRef(null);
+  const webcamRef = React.useRef(null);
+  const [imgSrc, setImgSrc] = React.useState(null);
+
+  const capture = React.useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImgSrc(imageSrc);
+  }, [webcamRef, setImgSrc]);
   return (
     <div>
       <Rnd
@@ -33,31 +35,20 @@ const Phone = () => {
       >
         <div style={{ height: "100%", width: "100%" }}>
           <div className="close">x</div>
-          <Camera
-            showFocus={true}
-            front={false}
-            capture={(img) => setCaptured(img)}
-            ref={cam}
-            width="80%"
-            height="auto"
-            focusWidth="80%"
-            focusHeight="60%"
-            btnColor="white"
-          />
+          <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" />
           <div>
             <p className="text-center">01:23</p>
             <div className="button-group">
               <div className="btn-circle">
-                {captured && <img alt="Preview" src={captured} />}
+                {imgSrc && <img alt="Preview" src={imgSrc} />}
               </div>
               <div
-              className="btn-capture"
-                onClick={(img) => {
-                  console.log("abcdef");
-                  cam.current.capture(img);
-                }}
+                className="btn-capture"
+                onClick={capture}
               />
-              <div className="btn-circle"><img src={camera} alt="turn camera" /></div>
+              <div className="btn-circle">
+                <img src={camera} alt="turn camera" />
+              </div>
             </div>
           </div>
         </div>
