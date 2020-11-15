@@ -11,7 +11,7 @@ import CameraIcon from "../camera.svg";
 
 import { addLink } from "../../store/links-action";
 
-const Phone = () => {
+const Phone = (props) => {
   const [clickTime, setClickTime] = React.useState(0);
 
   const webcamRef = React.useRef(null);
@@ -23,7 +23,7 @@ const Phone = () => {
   const capture = React.useCallback((flag = false) => {
     const imageSrc = webcamRef.current.getScreenshot();
     setImgSrc(imageSrc);
-    if (flag) addLink(imageSrc);
+    if (!flag) props.addLink(imageSrc);
   }, [webcamRef, setImgSrc]);
 
   const handleStartCaptureClick = React.useCallback(() => {
@@ -59,7 +59,7 @@ const Phone = () => {
       });
       const url = URL.createObjectURL(blob);
       setImgSrc(url);
-      addLink(url);
+      props.addLink(url);
       setRecordedChunks([]);
     }
   }, [recordedChunks]);
@@ -132,6 +132,7 @@ const Phone = () => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addLink: (link) => {
+      console.log(link)
       dispatch(addLink(link))
     }
   }
