@@ -12,7 +12,9 @@ const Modal = ({ handleClose, show, links }) => {
         <div className="modal-close">x</div>
         <div>
           {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
-          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" && <video src={links[currentImageIndex]} title="Saved Data" />}
+          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" && <video controls src={links[currentImageIndex]} title="Saved Data" >
+            <source src={links[currentImageIndex]} type="video/webm" />
+          </video>}
         </div>
         <div className="w-100 d-flex justify-content-between text-white display-6">
           <div onClick={() => setCurrentImageIndex(Math.abs((currentImageIndex - 1) % links.length))}>&lt;</div>
