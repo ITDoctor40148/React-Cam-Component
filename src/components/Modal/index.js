@@ -12,7 +12,7 @@ const Modal = ({ handleClose, show, links }) => {
         <div className="modal-close">x</div>
         <div>
           {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
-          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" && <video controls src={links[currentImageIndex]} title="Saved Data" >
+          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" && <video className="w-100" controls src={links[currentImageIndex]} title="Saved Data" >
             <source src={links[currentImageIndex]} type="video/webm" />
           </video>}
         </div>
