@@ -2,7 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { connect } from 'react-redux';
 import "./popupComponent.scss"
-const Modal = ({ handleClose, show, links }) => {
+
+import { removeLink } from '../../store/links-action';
+
+const Modal = ({ handleClose, show, links, removeLink }) => {
   const video = React.useRef(null);
   const [play, setPlay] = React.useState(false);
   const [currentImageIndex, setCurrentImageIndex] = React.useState(0);
@@ -22,11 +25,11 @@ const Modal = ({ handleClose, show, links }) => {
   return (
     <div className={showHideClassName}>
       <section className="modal-main">
-        <div className="modal-close">x</div>
         <div className="video-center">
+          <div className="modal-close" onClick={() => {removeLink(currentImageIndex)}}>x</div>
           {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
           {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" &&
-            <video ref={video} className="w-100" controls src={links[currentImageIndex]} title="Saved Data" >
+            <video ref={video} className="w-100" controls src={links[currentImageIndex]} title="Saved Data">
               <source src={links[currentImageIndex]} type="video/webm" />
             </video>}
           <div className="w-100 d-flex justify-content-between text-white display-6">
@@ -54,4 +57,12 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(Modal);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeLink: (index) => {
+      dispatch(removeLink(index))
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Modal);

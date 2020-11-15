@@ -131,7 +131,6 @@ const Phone = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addLink: (link) => {
-      console.log(link);
       dispatch(addLink(link));
     },
   };
