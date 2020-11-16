@@ -49,6 +49,15 @@
     }
 }
 
+.box-mobile {
+    border: none!important;
+    box-shadow: none!important;
+    margin: 0!important;
+    padding: 0!important;
+    position: absolute!important;
+    top: 0!important;
+}
+
 .btn-capture {
     width: 60px;
     height: 60px;

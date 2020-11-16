@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 
 import { Rnd } from "react-rnd";
 import Webcam from "react-webcam";
-import CountUp, { useCountUp } from "react-countup";
+import { useMediaQuery } from "react-responsive";
+import { useCountUp } from "react-countup";
 
 import "react-resizable/css/styles.css";
 
@@ -13,6 +14,20 @@ import "./index.scss";
 import CameraIcon from "../camera.svg";
 
 import { addLink } from "../../store/links-action";
+
+const phoneSizeDesktop = {
+  x: 50,
+  y: 50,
+  width: 425,
+  height: 882,
+};
+
+const phoneSizePhone = {
+  x: 0,
+  y: 0,
+  width: "100%",
+  height: "100%",
+};
 
 const secToTime = (sec) => {
   const m = Math.floor(sec / 60);
@@ -24,6 +39,8 @@ const secToTime = (sec) => {
 };
 
 const Phone = (props) => {
+  const isPhone = useMediaQuery({ maxWidth: 767 });
+
   const [timerID, setTimerID] = React.useState(-1);
   const [elapsed, setElapsed] = React.useState(0);
   const [clickTime, setClickTime] = React.useState(0);
@@ -110,90 +127,168 @@ const Phone = (props) => {
 
   return (
     <div>
-      <Rnd
-        default={{
-          x: 50,
-          y: 50,
-          width: 320,
-          height: 690,
-        }}
-        minWidth={320}
-        minHeight={690}
-        className="box"
-      >
-        <div style={{ height: "100%", width: "100%" }}>
-          <div
-            className="close"
-            onClick={() => {
-              // end if recording video
-              if (capturing) {
-                update(0);
-                handleStopCaptureClick();
-                handleDownload();
-                capture(true);
+      {!isPhone && (
+        <Rnd
+          default={{
+            x: 50,
+            y: 50,
+            width: 425,
+            height: 882,
+          }}
+          minWidth={425}
+          minHeight={882}
+          className="box"
+        >
+          <div style={{ height: "100%", width: "100%" }}>
+            <div
+              className="close"
+              onClick={() => {
+                // end if recording video
+                if (capturing) {
+                  update(0);
+                  handleStopCaptureClick();
+                  handleDownload();
+                  capture(true);
+                }
+                props.onClose();
+              }}
+            >
+              x
+            </div>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              className="w-100 h-75"
+              videoConstraints={
+                devices.length ? { deviceId: devices[deviceId].deviceId } : null
               }
-              props.onClose();
-            }}
-          >
-            x
-          </div>
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            className="w-100 h-75"
-            videoConstraints={
-              devices.length ? { deviceId: devices[deviceId].deviceId } : null
-            }
-          />
-          <div className="buttons">
-            {capturing && (
-              <p className="text-center text-white timer">
-                {secToTime(countUp)}
-              </p>
-            )}
-            <div className="button-group">
-              <div className="btn-circle" onClick={() => setShow(true)}>
-                {imgSrc && imgSrc.substring(0, 4) === "data" && (
-                  <img src={imgSrc} alt="turn camera" />
-                )}
-                <p className="text-white">{props.links.length}</p>
-              </div>
-              <div
-                className="btn-capture"
-                onMouseLeave={() => setClickTime(new Date().getTime())}
-                onMouseUp={() => {
-                  const now = new Date().getTime();
-                  if (now - clickTime > 200) {
-                    if (!capturing) {
-                      start();
-                      handleStartCaptureClick();
+            />
+            <div className="buttons">
+              {capturing && (
+                <p className="text-center text-white timer">
+                  {secToTime(countUp)}
+                </p>
+              )}
+              <div className="button-group">
+                <div className="btn-circle" onClick={() => setShow(true)}>
+                  {imgSrc && imgSrc.substring(0, 4) === "data" && (
+                    <img src={imgSrc} alt="turn camera" />
+                  )}
+                  <p className="text-white">{props.links.length}</p>
+                </div>
+                <div
+                  className="btn-capture"
+                  onMouseLeave={() => setClickTime(new Date().getTime())}
+                  onMouseUp={() => {
+                    const now = new Date().getTime();
+                    if (now - clickTime > 200) {
+                      if (!capturing) {
+                        start();
+                        handleStartCaptureClick();
+                      } else {
+                        update(0);
+                        handleStopCaptureClick();
+                        handleDownload();
+                        capture(true);
+                      }
                     } else {
-                      update(0);
-                      handleStopCaptureClick();
-                      handleDownload();
-                      capture(true);
+                      if (!capturing) capture();
                     }
-                  } else {
-                    if (!capturing) capture();
-                  }
-                }}
-                onMouseDown={() => setClickTime(new Date().getTime())}
-              />
-              <div
-                className="btn-circle"
-                onClick={() => {
-                  if (devices.length)
-                    setDeviceId((deviceId + 1) % devices.length);
-                }}
-              >
-                <img src={CameraIcon} alt="Toggling" />
+                  }}
+                  onMouseDown={() => setClickTime(new Date().getTime())}
+                />
+                <div
+                  className="btn-circle"
+                  onClick={() => {
+                    if (devices.length)
+                      setDeviceId((deviceId + 1) % devices.length);
+                  }}
+                >
+                  <img src={CameraIcon} alt="Toggling" />
+                </div>
               </div>
             </div>
           </div>
+          <Modal show={show} handleClose={() => setShow(false)} />
+        </Rnd>
+      )}
+      {isPhone && (
+        <div className="box box-mobile">
+          <div style={{ height: "100vh", width: "100vw" }}>
+            <div
+              className="close"
+              onClick={() => {
+                // end if recording video
+                if (capturing) {
+                  update(0);
+                  handleStopCaptureClick();
+                  handleDownload();
+                  capture(true);
+                }
+                props.onClose();
+              }}
+            >
+              x
+            </div>
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              className="w-100 h-75"
+              videoConstraints={
+                devices.length ? { deviceId: devices[deviceId].deviceId } : null
+              }
+            />
+            <div className="buttons">
+              {capturing && (
+                <p className="text-center text-white timer">
+                  {secToTime(countUp)}
+                </p>
+              )}
+              <div className="button-group">
+                <div className="btn-circle" onClick={() => setShow(true)}>
+                  {imgSrc && imgSrc.substring(0, 4) === "data" && (
+                    <img src={imgSrc} alt="turn camera" />
+                  )}
+                  <p className="text-white">{props.links.length}</p>
+                </div>
+                <div
+                  className="btn-capture"
+                  onMouseLeave={() => setClickTime(new Date().getTime())}
+                  onMouseUp={() => {
+                    const now = new Date().getTime();
+                    if (now - clickTime > 200) {
+                      if (!capturing) {
+                        start();
+                        handleStartCaptureClick();
+                      } else {
+                        update(0);
+                        handleStopCaptureClick();
+                        handleDownload();
+                        capture(true);
+                      }
+                    } else {
+                      if (!capturing) capture();
+                    }
+                  }}
+                  onMouseDown={() => setClickTime(new Date().getTime())}
+                />
+                <div
+                  className="btn-circle"
+                  onClick={() => {
+                    if (devices.length)
+                      setDeviceId((deviceId + 1) % devices.length);
+                  }}
+                >
+                  <img src={CameraIcon} alt="Toggling" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <Modal show={show} handleClose={() => setShow(false)} />
         </div>
-        <Modal show={show} handleClose={() => setShow(false)} />
-      </Rnd>
+      )}
     </div>
   );
 };
