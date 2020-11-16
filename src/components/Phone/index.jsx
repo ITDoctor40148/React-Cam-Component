@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Rnd } from "react-rnd";
 
+import { Rnd } from "react-rnd";
 import Webcam from "react-webcam";
+import CountUp, { useCountUp } from 'react-countup';
 
 import "react-resizable/css/styles.css";
 
@@ -14,6 +15,8 @@ import CameraIcon from "../camera.svg";
 import { addLink } from "../../store/links-action";
 
 const Phone = (props) => {
+  const [timerID, setTimerID] = React.useState(-1);
+  const [elapsed, setElapsed] = React.useState(0);
   const [clickTime, setClickTime] = React.useState(0);
   const [show, setShow] = React.useState(false);
 
@@ -25,6 +28,17 @@ const Phone = (props) => {
 
   const [deviceId, setDeviceId] = React.useState(0);
   const [devices, setDevices] = React.useState([]);
+
+  const { countUp, start, pauseResume, reset, update } = useCountUp({
+    start: 0,
+    delay: 0,
+    duration: 1000,
+    onReset: () => console.log('Resetted!'),
+    onUpdate: () => console.log('Updated!'),
+    onPauseResume: () => console.log('Paused or resumed!'),
+    onStart: ({ pauseResume }) => console.log(pauseResume),
+    onEnd: ({ pauseResume }) => console.log(pauseResume),
+  });
 
   const handleDevices = React.useCallback(
     (mediaDevices) =>
@@ -39,6 +53,7 @@ const Phone = (props) => {
   const capture = React.useCallback(
     (flag = false) => {
       const imageSrc = webcamRef.current.getScreenshot();
+      if (!imageSrc) return;
       setImgSrc(imageSrc);
       if (!flag) props.addLink(imageSrc);
     },
@@ -107,13 +122,14 @@ const Phone = (props) => {
               devices.length ? { deviceId: devices[deviceId].deviceId } : null
             }
           />
-          <div>
-            {capturing && <p className="text-center">01:23</p>}
+          <div className="buttons">
+            {capturing && <p className="text-center text-white timer">{<CountUp duration={1000} />}</p>}
             <div className="button-group">
               <div className="btn-circle" onClick={() => setShow(true)}>
                 {imgSrc && imgSrc.substring(0, 4) === "data" && (
                   <img src={imgSrc} alt="turn camera" />
                 )}
+                <p className="text-white">{props.links.length}</p>
               </div>
               <div
                 className="btn-capture"
@@ -121,11 +137,12 @@ const Phone = (props) => {
                 onMouseUp={() => {
                   const now = new Date().getTime();
                   if (now - clickTime > 500) {
-                    console.log("test");
                     if (!capturing) {
+                      start();
                       setCapturing(true);
                       handleStartCaptureClick();
                     } else {
+                      update(0);
                       setCapturing(false);
                       handleStopCaptureClick();
                       handleDownload();
@@ -154,6 +171,10 @@ const Phone = (props) => {
   );
 };
 
+const mapStateToProps = (state) => ({
+  links: state.links
+})
+
 const mapDispatchToProps = (dispatch) => {
   return {
     addLink: (link) => {
@@ -162,4 +183,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(null, mapDispatchToProps)(Phone);
+export default connect(mapStateToProps, mapDispatchToProps)(Phone);

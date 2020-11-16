@@ -13,6 +13,7 @@
     "package.json": "^2.0.1",
     "react": "^16.13.1",
     "react-cam": "^1.1.11",
+    "react-countup": "^4.3.3",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.2",
     "react-resizable": "^1.11.0",

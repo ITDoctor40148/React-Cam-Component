@@ -27,8 +27,8 @@ const Modal = ({ handleClose, show, links, removeLink }) => {
       <section className="modal-main">
         <div className="video-center">
           <div className="modal-close" onClick={() => {removeLink(currentImageIndex)}}>x</div>
-          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
-          {links.length !== 0 && links[currentImageIndex].substring(0, 4) === "blob" &&
+          {links[currentImageIndex] && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
+          {links[currentImageIndex] && links[currentImageIndex].substring(0, 4) === "blob" &&
             <video ref={video} className="w-100" controls src={links[currentImageIndex]} title="Saved Data">
               <source src={links[currentImageIndex]} type="video/webm" />
             </video>}
