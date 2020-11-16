@@ -6,8 +6,8 @@ const App = () => {
     const [open, setOpen] = React.useState(false)
     return (
         <div>
-            {/* <button onClick={() => setOpen(!open)}>Open Camera</button> */}
-            <Phone />
+            <button onClick={() => setOpen(!open)}>Open Camera</button>
+            {open&&<Phone onClose={() => setOpen(false)} />}
         </div>
     )
 }

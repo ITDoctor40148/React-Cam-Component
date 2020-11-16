@@ -42,7 +42,7 @@ const Phone = (props) => {
     start: 0,
     end: 1000,
     delay: 0,
-    duration: 1000,
+    duration: 10000,
     onReset: () => console.log('Resetted!'),
     onUpdate: () => console.log('Updated!'),
     onPauseResume: () => console.log('Paused or resumed!'),
