@@ -23,6 +23,19 @@ const Phone = (props) => {
   const [capturing, setCapturing] = React.useState(false);
   const [recordedChunks, setRecordedChunks] = React.useState([]);
 
+  const [deviceId, setDeviceId] = React.useState(0);
+  const [devices, setDevices] = React.useState([]);
+
+  const handleDevices = React.useCallback(
+    (mediaDevices) =>
+      setDevices(mediaDevices.filter(({ kind }) => kind === "videoinput")),
+    [setDevices]
+  );
+
+  React.useEffect(() => {
+    navigator.mediaDevices.enumerateDevices().then(handleDevices);
+  }, [handleDevices]);
+
   const capture = React.useCallback(
     (flag = false) => {
       const imageSrc = webcamRef.current.getScreenshot();
@@ -85,7 +98,15 @@ const Phone = (props) => {
       >
         <div style={{ height: "100%", width: "100%" }}>
           <div className="close">x</div>
-          <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" className="w-100 h-75" />
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            className="w-100 h-75"
+            videoConstraints={
+              devices.length ? { deviceId: devices[deviceId].deviceId } : null
+            }
+          />
           <div>
             {capturing && <p className="text-center">01:23</p>}
             <div className="button-group">
@@ -116,7 +137,12 @@ const Phone = (props) => {
                 }}
                 onMouseDown={() => setClickTime(new Date().getTime())}
               />
-              <div className="btn-circle">
+              <div
+                className="btn-circle"
+                onClick={() => {
+                  if (devices.length) setDeviceId((deviceId + 1) % devices.length);
+                }}
+              >
                 <img src={CameraIcon} alt="Toggling" />
               </div>
             </div>
