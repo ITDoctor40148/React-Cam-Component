@@ -14,6 +14,15 @@ import CameraIcon from "../camera.svg";
 
 import { addLink } from "../../store/links-action";
 
+const secToTime  = (sec) => {
+  const m = Math.floor(sec / 60);
+  const s = sec - m * 60;
+
+  const min = m < 10 ? "0" + m : m;
+  const secs = s < 10 ? "0" + s : s;
+  return min + ":" + secs;
+}
+
 const Phone = (props) => {
   const [timerID, setTimerID] = React.useState(-1);
   const [elapsed, setElapsed] = React.useState(0);
@@ -123,7 +132,7 @@ const Phone = (props) => {
             }
           />
           <div className="buttons">
-            {capturing && <p className="text-center text-white timer">{<CountUp duration={1000} />}</p>}
+            {capturing && <p className="text-center text-white timer">{secToTime(countUp)}</p>}
             <div className="button-group">
               <div className="btn-circle" onClick={() => setShow(true)}>
                 {imgSrc && imgSrc.substring(0, 4) === "data" && (
