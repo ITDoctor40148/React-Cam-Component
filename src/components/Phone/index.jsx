@@ -40,6 +40,7 @@ const Phone = (props) => {
 
   const { countUp, start, pauseResume, reset, update } = useCountUp({
     start: 0,
+    end: 1000,
     delay: 0,
     duration: 1000,
     onReset: () => console.log('Resetted!'),
@@ -148,7 +149,6 @@ const Phone = (props) => {
                   if (now - clickTime > 500) {
                     if (!capturing) {
                       start();
-                      setCapturing(true);
                       handleStartCaptureClick();
                     } else {
                       update(0);
@@ -158,7 +158,7 @@ const Phone = (props) => {
                       capture(true);
                     }
                   } else {
-                    capture();
+                    if (!capturing) capture();
                   }
                 }}
                 onMouseDown={() => setClickTime(new Date().getTime())}
