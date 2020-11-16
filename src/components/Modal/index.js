@@ -35,7 +35,7 @@ const Modal = ({ handleClose, show, links, removeLink }) => {
             </video>}
           <div className="w-100 d-flex justify-content-between text-white display-6">
             <div onClick={() => setCurrentImageIndex(Math.abs((currentImageIndex - 1) % links.length))}>&lt;</div>
-            <div onClick={() => { toggle() }}><img src={play ? PauseIcon : PlayIcon} alt="Play"/></div>
+            <div className="toggle" onClick={() => { toggle() }}><img src={play ? PauseIcon : PlayIcon} alt="Play"/></div>
             <div onClick={() => setCurrentImageIndex((currentImageIndex + 1) % links.length)}>&gt;</div>
           </div>
           <button style={{
