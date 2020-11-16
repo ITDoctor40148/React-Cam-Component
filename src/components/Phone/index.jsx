@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { Rnd } from "react-rnd";
 import Webcam from "react-webcam";
-import CountUp, { useCountUp } from 'react-countup';
+import CountUp, { useCountUp } from "react-countup";
 
 import "react-resizable/css/styles.css";
 
@@ -14,14 +14,14 @@ import CameraIcon from "../camera.svg";
 
 import { addLink } from "../../store/links-action";
 
-const secToTime  = (sec) => {
+const secToTime = (sec) => {
   const m = Math.floor(sec / 60);
   const s = sec - m * 60;
 
   const min = m < 10 ? "0" + m : m;
   const secs = s < 10 ? "0" + s : s;
   return min + ":" + secs;
-}
+};
 
 const Phone = (props) => {
   const [timerID, setTimerID] = React.useState(-1);
@@ -43,9 +43,9 @@ const Phone = (props) => {
     end: 1000,
     delay: 0,
     duration: 10000,
-    onReset: () => console.log('Resetted!'),
-    onUpdate: () => console.log('Updated!'),
-    onPauseResume: () => console.log('Paused or resumed!'),
+    onReset: () => console.log("Resetted!"),
+    onUpdate: () => console.log("Updated!"),
+    onPauseResume: () => console.log("Paused or resumed!"),
     onStart: ({ pauseResume }) => console.log(pauseResume),
     onEnd: ({ pauseResume }) => console.log(pauseResume),
   });
@@ -122,7 +122,21 @@ const Phone = (props) => {
         className="box"
       >
         <div style={{ height: "100%", width: "100%" }}>
-          <div className="close">x</div>
+          <div
+            className="close"
+            onClick={() => {
+              // end if recording video
+              if (capturing) {
+                update(0);
+                handleStopCaptureClick();
+                handleDownload();
+                capture(true);
+              }
+              props.onClose();
+            }}
+          >
+            x
+          </div>
           <Webcam
             audio={false}
             ref={webcamRef}
@@ -133,7 +147,11 @@ const Phone = (props) => {
             }
           />
           <div className="buttons">
-            {capturing && <p className="text-center text-white timer">{secToTime(countUp)}</p>}
+            {capturing && (
+              <p className="text-center text-white timer">
+                {secToTime(countUp)}
+              </p>
+            )}
             <div className="button-group">
               <div className="btn-circle" onClick={() => setShow(true)}>
                 {imgSrc && imgSrc.substring(0, 4) === "data" && (
@@ -165,7 +183,8 @@ const Phone = (props) => {
               <div
                 className="btn-circle"
                 onClick={() => {
-                  if (devices.length) setDeviceId((deviceId + 1) % devices.length);
+                  if (devices.length)
+                    setDeviceId((deviceId + 1) % devices.length);
                 }}
               >
                 <img src={CameraIcon} alt="Toggling" />
@@ -180,8 +199,8 @@ const Phone = (props) => {
 };
 
 const mapStateToProps = (state) => ({
-  links: state.links
-})
+  links: state.links,
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {

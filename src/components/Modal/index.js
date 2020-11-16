@@ -27,7 +27,7 @@ const Modal = ({ handleClose, show, links, removeLink }) => {
     <div className={showHideClassName}>
       <section className="modal-main">
         <div className="video-center">
-          <div className="modal-close" onClick={() => {removeLink(currentImageIndex)}}>x</div>
+          {links.length !== 0 && <div className="modal-close" onClick={() => {removeLink(currentImageIndex)}}>x</div>}
           {links[currentImageIndex] && links[currentImageIndex].substring(0, 4) === "data" && <img src={links[currentImageIndex]} alt="Saved Data" />}
           {links[currentImageIndex] && links[currentImageIndex].substring(0, 4) === "blob" &&
             <video ref={video} className="w-100" controls src={links[currentImageIndex]} title="Saved Data">
@@ -35,7 +35,7 @@ const Modal = ({ handleClose, show, links, removeLink }) => {
             </video>}
           <div className="w-100 d-flex justify-content-between text-white display-6">
             <div onClick={() => setCurrentImageIndex(Math.abs((currentImageIndex - 1) % links.length))}>&lt;</div>
-            <div onClick={() => { toggle() }}><img className="toggle" src={play ? PauseIcon : PlayIcon} alt="Play"/></div>
+            <div onClick={() => { toggle() }}><img className="toggle" src={play ? PauseIcon : PlayIcon} alt="Play" style={{display: links[currentImageIndex] && links[currentImageIndex].substring(0, 4) === "blob"? 'block' : 'none'}}/></div>
             <div onClick={() => setCurrentImageIndex((currentImageIndex + 1) % links.length)}>&gt;</div>
           </div>
           <button style={{
