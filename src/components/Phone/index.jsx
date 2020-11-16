@@ -146,13 +146,12 @@ const Phone = (props) => {
                 onMouseLeave={() => setClickTime(new Date().getTime())}
                 onMouseUp={() => {
                   const now = new Date().getTime();
-                  if (now - clickTime > 500) {
+                  if (now - clickTime > 200) {
                     if (!capturing) {
                       start();
                       handleStartCaptureClick();
                     } else {
                       update(0);
-                      setCapturing(false);
                       handleStopCaptureClick();
                       handleDownload();
                       capture(true);

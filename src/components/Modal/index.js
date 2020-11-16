@@ -1,7 +1,8 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { connect } from 'react-redux';
 import "./popupComponent.scss"
+import PlayIcon from '../play.svg';
+import PauseIcon from '../pause.svg';
 
 import { removeLink } from '../../store/links-action';
 
@@ -34,7 +35,7 @@ const Modal = ({ handleClose, show, links, removeLink }) => {
             </video>}
           <div className="w-100 d-flex justify-content-between text-white display-6">
             <div onClick={() => setCurrentImageIndex(Math.abs((currentImageIndex - 1) % links.length))}>&lt;</div>
-            <div onClick={() => { toggle() }}>{play ? "Pause" : "Play"}</div>
+            <div onClick={() => { toggle() }}><img src={play ? PauseIcon : PlayIcon} alt="Play"/></div>
             <div onClick={() => setCurrentImageIndex((currentImageIndex + 1) % links.length)}>&gt;</div>
           </div>
           <button style={{
